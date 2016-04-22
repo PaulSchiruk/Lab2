@@ -5,59 +5,78 @@ using namespace std;
 void EnterArray(double**, int, double);
 void EnterArrayFLib(double**, int);
 void DisplayArray(double**, int);
-void MemoryFill(double**, int);
+double** MemoryFill(int);
 void MemoryFree(double**, int);
 double Cosinus(double, double);
+void Comparison(double**, double**,double**, int);
+void MaxDifference(double**, int);
 
 int main()
 {
-	int n = 20;
-	double eps = 0.0001;
+	int n = 100;
+	double eps = 0.0000001;
 	//cin >> n;
 	//cin >> eps;
-	double** a = NULL;
-	double** b = NULL;
-	MemoryFill(a, n);
-	MemoryFill(b, n);
+	double** a = MemoryFill(n);
+	double** b = MemoryFill(n);
+	double** c = MemoryFill(n);
 	EnterArray(a, n, eps);
 	EnterArrayFLib(b, n);
-	DisplayArray(a, n);
-	cout.width(20);
-	DisplayArray(b, n);
+	Comparison(a, b, c, n);
+	//DisplayArray(a, n);
+	cout << endl;
+	//DisplayArray(b, n);
+	cout << endl;
+	//DisplayArray(c, n);
+	cout << endl;
+	MaxDifference(c, n);
 	MemoryFree(a, n);
 	MemoryFree(b, n);
 	system("pause");
 	return 0;
 }
 
-void MemoryFill(double** a, int n)
+double** MemoryFill(int n)
 {
-	a = new double*[n];
+	double** a = new double*[n];
 	for (int i = 0; i < n; i++)
 	{
 		a[i] = new double[n];
 	}
+	return a;
 }
 
 void EnterArray(double** a, int n, double eps)
 {
+	double pi = 3.14159265359;
 	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < n; i++)
-		{
-			if (i == j)  a[i][j] = (Cosinus(i + j, eps) + 2 * i - j) / ((i + j + 1)*(i + j + 1)); 
+		for (int j = 0; j < n; j++)
+		{			
+			if (i == j)
+			{
+				double t = i + j;
+				while (t > pi)
+					t -= 2 * pi;
+				while (t < (-1)* pi)
+					t += 2 * pi;
+				a[i][j] = (Cosinus(t, eps) + 2 * i - j) / ((i + j + 1)*(i + j + 1));
+			}
 			else a[i][j] = i - j;
 		}
 	}
+	return;
 }
+
 
 void EnterArrayFLib(double** a, int n)
 {
 	for (int i = 0; i < n; i++)
 	{
-		for (int j = 0; j < n; i++)
+		for (int j = 0; j < n; j++)
 		{
-			if (i == j) a[i][j] = (cos(i + j) + 2 * i - j) / ((i + j + 1)*(i + j + 1));
+			if (i == j) 
+				a[i][j] = (cos(i + j) + 2 * i - j) / ((i + j + 1)*(i + j + 1));
 			else a[i][j] = i - j;
 		}
 	}
@@ -69,8 +88,8 @@ void DisplayArray(double** a, int n)
 	{
 		for (int i = 0; i < n; i++)
 		{
-			cout.width(7);
-			cout << a[i];
+			cout.width(10);
+			cout << a[i][j];
 		}
 		cout << endl;
 	}
@@ -98,4 +117,32 @@ double Cosinus(double a, double eps)
 		n *= (-1 * a * a) / (m * (m + 1));
 	}
 	return sum;
+}
+
+void Comparison(double** a, double** b,double** c, int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			if (i == j)
+				c[i][j] = fabs(a[i][j] - b[i][j]);
+			else c[i][j] = 0;
+		}
+	}
+}
+
+void MaxDifference(double** a, int n)
+{
+	double max = 0;
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			if (i == j) 
+				if (a[i][j] > max)
+					max = a[i][j];
+		}
+	}
+	cout << " Maximum differemce is: " << max << endl;
 }
